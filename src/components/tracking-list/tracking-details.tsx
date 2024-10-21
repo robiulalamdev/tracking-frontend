@@ -15,7 +15,13 @@ const options = [
   { key: "shipped_to_delivery_city", label: "Shipped to Delivery City" },
   { key: "delivered", label: "Delivered" },
 ];
-const Trackingdetails = () => {
+const Trackingdetails = ({
+  data,
+  setType,
+  type,
+  loadStatus,
+  setLoadStatus,
+}: any) => {
   const { toast } = useToast();
   const trackingID = "https//:www.testing.com/track/202428490234";
 
@@ -26,6 +32,8 @@ const Trackingdetails = () => {
       });
     });
   };
+
+  console.log(type);
 
   return (
     <div className="py-10">
@@ -42,18 +50,25 @@ const Trackingdetails = () => {
             placeholder="Status"
             className="w-full sm:w-[400px]"
             size="lg"
-            onSelectionChange={(key) => console.log(key)}
+            onSelectionChange={(key) => {
+              // const selectedKey = key.values().next().value; // Extract the selected value from Set
+              const selectedKey = Object.values(key)[0];
+              setLoadStatus(selectedKey); // Set the extracted value
+            }}
+            selectedKeys={new Set([loadStatus])} // Pass a Set with the selected value
           >
-            {options?.map((option, i) => (
-              <SelectItem key={i} value={option.key}>
+            {options?.map((option) => (
+              <SelectItem key={option.key} value={option.key}>
                 {option.label}
               </SelectItem>
             ))}
           </Select>
         </div>
       </div>
+
       <div className="mb-10">
-        <Lastknownlocation />
+        <Lastknownlocation data={data} setType={setType} type={type} />
+
         <Timeline />
         <ETA />
       </div>

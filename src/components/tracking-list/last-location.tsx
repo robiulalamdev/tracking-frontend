@@ -6,6 +6,7 @@ import calendar from "../../../public/images/calendar-black.svg";
 import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import reload from "../../../public/images/reload.svg";
+import moment from "moment";
 
 const initialTags = [
   {
@@ -86,7 +87,7 @@ const initialTags = [
   },
 ];
 
-const Lastknownlocation = () => {
+const Lastknownlocation = ({ data, setType, type }: any) => {
   const [tags, setTags] = React.useState(initialTags);
   const [selectedIndex, setSelectedIndex] = React.useState(null);
 
@@ -102,6 +103,11 @@ const Lastknownlocation = () => {
     }
   };
 
+  const locations =
+    data?.knownLocations?.length > 0 ? [...data.knownLocations].reverse() : [];
+
+  console.log(type);
+
   return (
     <div>
       <div>
@@ -112,15 +118,25 @@ const Lastknownlocation = () => {
                 Type:
               </Label>
               <RadioGroup
-                defaultValue="active"
+                value={type}
+                onValueChange={setType}
                 className="flex items-center space-x-4"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="active" id="active" />
+                  <RadioGroupItem
+                    value="active"
+                    id="active"
+                    checked={type === "active"}
+                  />
                   <Label htmlFor="active">Active</Label>
                 </div>
+
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="passive" id="passive" />
+                  <RadioGroupItem
+                    value="passive"
+                    id="passive"
+                    checked={type === "passive"}
+                  />
                   <Label htmlFor="passive">Passive</Label>
                 </div>
               </RadioGroup>
@@ -163,22 +179,30 @@ const Lastknownlocation = () => {
                 </div>
               </div>
               <ScrollArea className="h-[250px] lg:h-[510px] w-full rounded-[14px]">
-                <div className="pt-2">
-                  {tags.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`flex justify-between items-center text-primaryblack text-sm px-2 py-3.5 rounded-[4px] mb-1 cursor-pointer ${
-                        selectedIndex === index
-                          ? "bg-[#F5F8FE] text-primaryblue"
-                          : "bg-[#FBFBFB]"
-                      }`}
-                      onClick={() => handleLocationClick(index)}
-                    >
-                      <h4>{item.location}</h4>
-                      <p className="md:text-base text-xs">{item.datetime}</p>
-                    </div>
-                  ))}
-                </div>
+                {locations?.length > 0 && (
+                  <div className="pt-2">
+                    {locations?.map((item: any, index: number) => (
+                      <div
+                        key={index}
+                        className={`flex justify-between items-center text-primaryblack text-sm px-2 py-3.5 rounded-[4px] mb-1 cursor-pointer ${
+                          selectedIndex === index
+                            ? "bg-[#F5F8FE] text-primaryblue"
+                            : "bg-[#FBFBFB]"
+                        }`}
+                        onClick={() => handleLocationClick(index)}
+                      >
+                        <h4>
+                          {item?.state}, {item?.country}{" "}
+                        </h4>
+                        <p className="md:text-base text-xs">
+                          {moment(item?.time).format(
+                            "DD MMMM, YYYY [at] hh:mm A"
+                          )}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </ScrollArea>
             </div>
           </div>

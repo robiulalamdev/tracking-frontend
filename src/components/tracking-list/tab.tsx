@@ -5,23 +5,36 @@ import { Icon } from "@/icons";
 import { Location } from "@/interface";
 
 type Props = {
-  locations: Location[]
-  setLocations: React.Dispatch<React.SetStateAction<Location[]>>
-}
+  locations: Location[];
+  setLocations: React.Dispatch<React.SetStateAction<Location[]>>;
+  data?: any;
+  setType: any;
+  type: any;
+  loadStatus: any;
+  setLoadStatus: any;
+};
 
-const TabComponent = ({ locations, setLocations }: Props) => {
+const TabComponent = ({
+  locations,
+  setLocations,
+  data,
+  setType,
+  type,
+  loadStatus,
+  setLoadStatus,
+}: Props) => {
   const tabsData = [
     {
       tabscontent: LocationComp,
       value: "Stops",
       icon: "stops",
-      props: { locations, setLocations }
+      props: { locations, setLocations },
     },
     {
       tabscontent: Trackingdetails,
       value: "Tracking-Info",
       icon: "tracking",
-      props: {}
+      props: { data, setType, type, loadStatus, setLoadStatus },
     },
   ];
 

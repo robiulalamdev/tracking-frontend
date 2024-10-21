@@ -83,6 +83,8 @@ const Contactinfo: React.FC<IProps> = ({
   );
 
   const [isDraft, setIsDraft] = useState(false);
+  const [loadStatus, setLoadStatus] = useState("under_process");
+  const [type, setType] = useState("active");
   const [locations, setLocations] = useState<Location[]>(
     formValues?.locations || []
   );
@@ -128,10 +130,11 @@ const Contactinfo: React.FC<IProps> = ({
         },
         body: JSON.stringify({
           ...data,
-          type: "active", // active | passive
+          type: type, // active | passive
           locations,
           isPublished,
           isArchived,
+          loadStatus: loadStatus,
         }),
       });
 
@@ -157,6 +160,15 @@ const Contactinfo: React.FC<IProps> = ({
       console.error("Network error:", error);
     }
   };
+
+  useEffect(() => {
+    if (formValues?.type) {
+      setType(formValues?.type);
+    }
+    if (formValues?.loadStatus) {
+      setLoadStatus(formValues?.loadStatus);
+    }
+  }, [formValues]);
 
   return (
     <div>
@@ -355,7 +367,15 @@ const Contactinfo: React.FC<IProps> = ({
                   </FormItem>
                 )}
               />
-              <TabComponent locations={locations} setLocations={setLocations} />
+              <TabComponent
+                locations={locations}
+                setLocations={setLocations}
+                data={formValues}
+                setType={setType}
+                type={type}
+                loadStatus={loadStatus}
+                setLoadStatus={setLoadStatus}
+              />
               <div className="flex sm:flex-row  py-10 px-4 flex-col gap-4 justify-start md:justify-end">
                 <button
                   onClick={() => setIsDraft(false)}
